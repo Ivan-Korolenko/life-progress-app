@@ -12,7 +12,7 @@ class App extends Component {
   componentDidMount = () => {
     const memorizedLifeData = JSON.parse(localStorage.getItem("lifeData"))
     if(memorizedLifeData) this.setState({...memorizedLifeData})
-    this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000)
+    this.interval = setInterval(() => this.setState({ time: Date.now() }), 1000)
   }
 
   componentWillUnmount() {
