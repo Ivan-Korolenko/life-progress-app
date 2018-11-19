@@ -45,14 +45,47 @@ class App extends Component {
 
     return (
       <div className="App">
-        Day: {hoursPercentage}%
-        <br/>
-        Month: {daysInMonthPercentage}%
-        <br/>
-        Year: {daysInYearPercentage}%
-        <br/>
-        Life: {daysInLifePercentage ? `${daysInLifePercentage}%` : "Please enter your age and life expectancy"}
-        <LifeExpectancyInputs onLifeDataChange={this.onLifeDataChange} /> 
+        <div className="logo"><img src="favicon.png" alt="logo"/></div>
+        <h1>Life Progress App</h1>
+        <div className="content">
+          <div className="percantage-block">
+            <div className="percantage-block-label">Day: </div>
+            <div className="percentage-bar">
+              <div className="percentage-bar-filled-part" style={{width: `${hoursPercentage}%`}}>
+                {hoursPercentage}%
+              </div>
+            </div>
+          </div>
+          <div className="percantage-block">
+            <div className="percantage-block-label">Month: </div>
+            <div className="percentage-bar">
+              <div className="percentage-bar-filled-part" style={{width: `${daysInMonthPercentage}%`}}>
+                {daysInMonthPercentage}%
+              </div>
+            </div>
+          </div>
+          <div className="percantage-block">
+            <div className="percantage-block-label">Year: </div>
+            <div className="percentage-bar">
+              <div className="percentage-bar-filled-part" style={{width: `${daysInYearPercentage}%`}}>
+                {daysInYearPercentage}%
+              </div>
+            </div>
+          </div>
+          <div className="percantage-block">
+            <div className="percantage-block-label">Life: </div>
+            {
+              daysInLifePercentage 
+              ? <div className="percentage-bar">
+                  <div className="percentage-bar-filled-part" style={{width: `${daysInLifePercentage}%`}}>
+                    {daysInLifePercentage}%
+                  </div>
+                </div>
+              : "Please enter your age and life expectancy"
+            }
+          </div>
+          <LifeExpectancyInputs onLifeDataChange={this.onLifeDataChange} />
+        </div>
       </div>
     )
   }
@@ -110,7 +143,7 @@ class LifeExpectancyInputs extends Component {
   render() {
     const {error} = this.state
     return (
-      <div className="life-expectancy-input">
+      <div className="life-expectancy-inputs">
         <label>Your age and life expectancy: </label>
         <input type="text" onChange={this.onAgeInputChange} onKeyPress={this.validate}/>
         <input type="text" onChange={this.onLifeExpectancyInputChange} onKeyPress={this.validate}/>
