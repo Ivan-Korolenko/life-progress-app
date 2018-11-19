@@ -8,9 +8,16 @@ class App extends Component {
     lifeExpectancy: undefined
   }
 
+  componentDidMount = () => {
+    const memorizedLifeData = JSON.parse(localStorage.getItem("lifeData"))
+    if(memorizedLifeData) this.setState({...memorizedLifeData})
+  }
+
   onLifeDataChange = lifeData => {
-    if (lifeData.age && lifeData.lifeExpectancy)
-      this.setState({ lifeExpectancy: lifeData.lifeExpectancy, age: lifeData.age })
+    if (lifeData && lifeData.age && lifeData.lifeExpectancy) {
+      this.setState({...lifeData})
+      localStorage.setItem("lifeData", JSON.stringify(lifeData))
+    }
   }
 
   getDaysInMonth = (month, year) => 
@@ -55,29 +62,31 @@ class App extends Component {
 class LifeExpectancyInputs extends Component {
 
   state = {
-    error: false,
+    error: '',
     ageValue: '',
     lifeExpectancyValue: ''
   }
 
-  onAgeInputChange = e => {
-    const inputValue = e.target.value
+  onAgeInputChange = e => this.setState({ ageValue: e.target.value })
 
-    if(inputValue) this.setState({ ageValue: inputValue })
-  }
-
-  onLifeExpectancyInputChange = e => {
-    const inputValue = e.target.value
-
-    if(inputValue) this.setState({ lifeExpectancyValue: inputValue })
-  }
+  onLifeExpectancyInputChange = e => this.setState({ lifeExpectancyValue: e.target.value })
 
   onButtonClick = () => {
-    if (this.state.ageValue && this.state.lifeExpectancyValue) 
-      this.props.onLifeDataChange({
-        age: this.state.ageValue, 
-        lifeExpectancy: this.state.lifeExpectancyValue
-      })
+    const {ageValue, lifeExpectancyValue} = this.state
+
+    console.log(this.state)
+
+    if (ageValue && lifeExpectancyValue) {
+      if(parseInt(ageValue) <= parseInt(lifeExpectancyValue)) {
+        this.setState({error: ""})
+        this.props.onLifeDataChange({
+          age: ageValue, 
+          lifeExpectancy: lifeExpectancyValue,
+        })
+      }
+      else this.setState({error: "Age can't be bigger than life expectancy"})
+    }
+    else this.setState({error: "One or more of the fields is empty"})
   }
 
   validate = e => {
@@ -106,7 +115,7 @@ class LifeExpectancyInputs extends Component {
         <input type="text" onChange={this.onAgeInputChange} onKeyPress={this.validate}/>
         <input type="text" onChange={this.onLifeExpectancyInputChange} onKeyPress={this.validate}/>
         <button onClick={this.onButtonClick}>OK</button>
-        {error && "Please enter a number"}
+        {error ? <div className="error">{error}</div> : ''}
       </div>
     )
   }
