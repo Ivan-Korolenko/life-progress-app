@@ -5,12 +5,18 @@ class App extends Component {
 
   state = {
     age: undefined,
-    lifeExpectancy: undefined
+    lifeExpectancy: undefined,
+    time: undefined
   }
 
   componentDidMount = () => {
     const memorizedLifeData = JSON.parse(localStorage.getItem("lifeData"))
     if(memorizedLifeData) this.setState({...memorizedLifeData})
+    this.interval = setInterval(() => this.setState({ time: Date.now() }), 60000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   onLifeDataChange = lifeData => {
@@ -84,7 +90,11 @@ class App extends Component {
               : "Please enter your age and life expectancy"
             }
           </div>
-          <LifeExpectancyInputs onLifeDataChange={this.onLifeDataChange} />
+          <LifeExpectancyInputs 
+            age={age || ''} 
+            lifeExpectancy={lifeExpectancy || ''} 
+            onLifeDataChange={this.onLifeDataChange} 
+          />
         </div>
       </div>
     )
@@ -96,25 +106,29 @@ class LifeExpectancyInputs extends Component {
 
   state = {
     error: '',
-    ageValue: '',
-    lifeExpectancyValue: ''
+    age: '',
+    lifeExpectancy: ''
+  }
+  componentDidUpdate = (prevProps, prevState) => {
+    const {age, lifeExpectancy} = this.props
+    if (prevProps.age !== this.props.age || prevProps.lifeExpectancy !== this.props.lifeExpectancy) {
+      this.setState({age: age,  lifeExpectancy: lifeExpectancy })
+    } 
   }
 
-  onAgeInputChange = e => this.setState({ ageValue: e.target.value })
+  onAgeInputChange = e => this.setState({ age: e.target.value })
 
-  onLifeExpectancyInputChange = e => this.setState({ lifeExpectancyValue: e.target.value })
+  onLifeExpectancyInputChange = e => this.setState({ lifeExpectancy: e.target.value })
 
   onButtonClick = () => {
-    const {ageValue, lifeExpectancyValue} = this.state
+    const {age, lifeExpectancy} = this.state
 
-    console.log(this.state)
-
-    if (ageValue && lifeExpectancyValue) {
-      if(parseInt(ageValue) <= parseInt(lifeExpectancyValue)) {
+    if (age && lifeExpectancy) {
+      if(parseInt(age) <= parseInt(lifeExpectancy)) {
         this.setState({error: ""})
         this.props.onLifeDataChange({
-          age: ageValue, 
-          lifeExpectancy: lifeExpectancyValue,
+          age: age, 
+          lifeExpectancy: lifeExpectancy,
         })
       }
       else this.setState({error: "Age can't be bigger than life expectancy"})
@@ -141,12 +155,12 @@ class LifeExpectancyInputs extends Component {
   }
 
   render() {
-    const {error} = this.state
+    const {error, age, lifeExpectancy} = this.state
     return (
       <div className="life-expectancy-inputs">
         <label>Your age and life expectancy: </label>
-        <input type="text" onChange={this.onAgeInputChange} onKeyPress={this.validate}/>
-        <input type="text" onChange={this.onLifeExpectancyInputChange} onKeyPress={this.validate}/>
+        <input type="text" value={age} onChange={this.onAgeInputChange} onKeyPress={this.validate}/>
+        <input type="text" value={lifeExpectancy} onChange={this.onLifeExpectancyInputChange} onKeyPress={this.validate}/>
         <button onClick={this.onButtonClick}>OK</button>
         {error ? <div className="error">{error}</div> : ''}
       </div>
