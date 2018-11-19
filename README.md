@@ -9,4 +9,4 @@ In contrast to the application presented there this one is completely free to us
 ## How can I use it?
 You can use it here: [live version](https://ivankorolenko.com/projects/life-progress-app/)
 
-You can also use it as a native applcation. Just tap on "Add to Homescreen" in your browser.
+You can also use it as a native application. Just tap on "Add to Homescreen" in your browser.
